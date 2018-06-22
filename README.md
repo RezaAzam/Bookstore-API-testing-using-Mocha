@@ -1,4 +1,4 @@
-# Charles' Mocha Project
+﻿# Charles' Mocha Project
 
 ## Description
 Charles' third Mocha demo project.
@@ -24,6 +24,10 @@ MongoDB requires a data directory to store all data. MongoDB’s default data di
 1. Start the MongoDB as mentioned above
 2. Start the server by running `npm start` in the CLI
 3. Simply input the request, e.g. `localhost:8080/book`, in the Postman.
+
+### Run the tests
+1. Start the MongoDB as mentioned above
+2. Start the tests by running `npm test` in the CLI
 
 ## Reference
 ### Documents and links
