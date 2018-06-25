@@ -1,0 +1,600 @@
+{
+	"info": {
+		"_postman_id": "fa54fd6d-361a-4713-8dcd-bc299a156799",
+		"name": "My Demo APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Working on",
+			"description": "The projects I am working on for learning purpose, under the temp folder.",
+			"item": [
+				{
+					"name": "Current UTC time",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dda30897-7478-4871-862e-7b797d5d402d",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Time is in a valid format\"] = responseBody === postman.getResponseHeader(\"date\");",
+									"tests[\"Response time is acceptable\"] = responseTime < 200; // milliseconds",
+									"// example using pm.response.to.have",
+									"pm.test(\"response is ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "https://postman-echo.com/time/now",
+							"protocol": "https",
+							"host": [
+								"postman-echo",
+								"com"
+							],
+							"path": [
+								"time",
+								"now"
+							]
+						},
+						"description": "A simple `GET` request to `/time/now` to return the current timestamp as a UTC string.\n\n```\nFri, 04 Nov 2016 09:00:46 GMT\n```"
+					},
+					"response": [
+						{
+							"id": "5736a868-ca5c-4224-b7bc-fb3f51d8ae80",
+							"name": "Current UTC time response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "https://postman-echo.com/time/now",
+									"protocol": "https",
+									"host": [
+										"postman-echo",
+										"com"
+									],
+									"path": [
+										"time",
+										"now"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "html",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "keep-alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip",
+									"name": "Content-Encoding",
+									"description": "The type of encoding used on the data."
+								},
+								{
+									"key": "Content-Length",
+									"value": "47",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html; charset=utf-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 22 May 2018 22:53:44 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1d-j5rq1ECweOeeOaW4DpKPP1Uv344\"",
+									"name": "ETag",
+									"description": "An identifier for a specific version of a resource, often a message digest"
+								},
+								{
+									"key": "Server",
+									"value": "nginx",
+									"name": "Server",
+									"description": "A name for the server"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding",
+									"name": "Vary",
+									"description": "Tells downstream proxies how to match future request headers to decide whether the cached response can be used rather than requesting a fresh one from the origin server."
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Tue Jan 19 2038 16:14:07 GMT+1300 (New Zealand Daylight Time)",
+									"httpOnly": true,
+									"domain": "postman-echo.com",
+									"path": "/",
+									"secure": false,
+									"value": "s%3AgCTD1W70rOWWh-IGR7fcnN6iIB0pNpXk.f2ckuUI2vCz%2FTV5pthO%2FmvoN6ceXvQrvbML8gBvMsdg",
+									"key": "sails.sid"
+								}
+							],
+							"body": "Tue, 22 May 2018 22:53:44 GMT"
+						}
+					]
+				},
+				{
+					"name": "jsonplaceholder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "603808f3-674f-477b-905a-0014ad8f2c29",
+								"type": "text/javascript",
+								"exec": [
+									"pm.globals.set('myVariable', 3);",
+									"",
+									"var apiKey = pm.environment.get('postman_api_key');",
+									"console.log(apiKey);",
+									"",
+									"// Save common tests in a global variable",
+									"postman.setGlobalVariable(\"commonTests\", () => {",
+									"  // The response time must be less than 500 milliseconds",
+									"  tests[\"Response time is acceptable\"] = responseTime < 500;",
+									"",
+									"  // The response body must include an \"id\" property",
+									"  var data = JSON.parse(responseBody);",
+									"  tests[\"Response has an ID\"] = data.id !== undefined;",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "58cd6f85-0d19-4a9e-9a4e-35b9ebd94a0d",
+								"type": "text/javascript",
+								"exec": [
+									"// First, run the common tests",
+									"eval(globals.commonTests)();",
+									"",
+									"// Then run any request-specific tests",
+									"// Define the JSON Schema",
+									"var customerSchema = pm.environment.get('customerSchema');",
+									"",
+									"// Test whether the response matches the schema",
+									"var customer = JSON.parse(responseBody);",
+									"tests[\"Customer is valid\"] = tv4.validate(customer, customerSchema);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "https://jsonplaceholder.typicode.com/posts/{{myVariable}}",
+							"protocol": "https",
+							"host": [
+								"jsonplaceholder",
+								"typicode",
+								"com"
+							],
+							"path": [
+								"posts",
+								"{{myVariable}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "my book project",
+			"description": "",
+			"item": [
+				{
+					"name": "getBooks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0e76f285-18c5-4216-8e33-5a43781c48bf",
+								"type": "text/javascript",
+								"exec": [
+									"function checkPage(arr, pageNum) {",
+									"    for(var i=0; i<arr.length; i++) {",
+									"        if (arr[i].pages == pageNum.toString())",
+									"        return true;",
+									"    }",
+									"}",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"    ",
+									"pm.test(\"Have a book with 150 pages\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(checkPage(jsonData, 150)).to.eql(true);",
+									"});",
+									"",
+									"pm.test(\"Have another book with 200 pages\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(checkPage(jsonData, 200)).to.eql(true);",
+									"});",
+									"",
+									"pm.test(\"Have another book with 250 pages\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(checkPage(jsonData, 250)).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "testbook1",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "Charles",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "pages",
+									"value": "150",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "year",
+									"value": "2018",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/book",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"book"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBook",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "testbook2",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "Charles",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "pages",
+									"value": "200",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "year",
+									"value": "2018",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/book/5b2c1e55dfaa84121480fe6e",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"book",
+								"5b2c1e55dfaa84121480fe6e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postBook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "testbook2",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "Charles",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "pages",
+									"value": "150",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "year",
+									"value": "2018",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/book",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"book"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateBook",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "testbook2",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "Charles",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "pages",
+									"value": "200",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "year",
+									"value": "2018",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/book/5b2c1e55dfaa84121480fe6e",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"book",
+								"5b2c1e55dfaa84121480fe6e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "postman-echo.com/get",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e4adece6-9a0b-4e34-a0c6-181dc4e16f2e",
+						"type": "text/javascript",
+						"exec": [
+							"",
+							"pm.sendRequest('https://postman-echo.com/time/now', function (err, res) {",
+							"    if (err) { console.log(err); }",
+							"    else {",
+							"        var currentTime = res.stream.toString();",
+							"        console.log(\"Pre-request script current time is: \" + currentTime);",
+							"        //pm.environment.set(\"currentTime\", currentTime);",
+							"        console.log(\"Pre-request script finishes\");",
+							"    }",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "086bee89-2cef-4f9e-be57-25b75115cf8c",
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"// Checking whether the response has a status 200. If so, the request is successful.",
+							"",
+							"tests[\"content-type header is present\"] = postman.getResponseHeader(\"content-type\");",
+							"// Checking whether the Content-type header is present.",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"console.log(jsonData);",
+							"tests[\"Checking parameter from JSON data\"] = jsonData.headers.host === \"postman-echo.com\";",
+							"// Checking whether the JSON parameter \"id\" exists and whether its value is 1."
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "postman-echo.com/get",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					]
+				},
+				"description": "# Markdown example:\r\n\r\n## Description\r\nThis project is made by Charles, a **SUPER** fun of software development and automation testing.\r\nCharles improves his skills real **FAST**~\r\n\r\n## Tutorial\r\n1. Open terminal (command prompt) and navigate to the location where you want to download and setup the project\r\n2. Run the command git clone https://github.com/Sachielsc/alienworld-web.git\r\n\r\n## Misc\r\nCharles recommends these websites to learn about the syntax of markdown documentations:\r\n1. Markdown syntax guide in [atlassian](https://confluence.atlassian.com/bitbucketserver/markdown-syntax-guide-776639995.html)\r\n2. Markdown syntax guide in [github](https://guides.github.com/features/mastering-markdown/#examples) (recommended)\r\n\r\n## Modules\r\n\r\n* Workshop\r\n* Contact Me\r\n* Game World\r\n* Movie World\r\n* Work Log\r\n* Other Projects\r\n* Community Hub( needs to include forum/discussion )\r\n* Cover Letter\r\n\r\n## TODO\r\n* Community Hub with authentication function.\r\n* Delete Chinese misc folder, put it here\r\n* Add new code snippet to the page"
+			},
+			"response": []
+		},
+		{
+			"name": "twitter api demo",
+			"request": {
+				"auth": {
+					"type": "oauth1",
+					"oauth1": [
+						{
+							"key": "nonce",
+							"value": "AQ1YN2Y13GGZA7QK35RCTXMRO5R75N9X",
+							"type": "string"
+						},
+						{
+							"key": "addParamsToHeader",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "tokenSecret",
+							"value": "ReuiNxcpDY4yE8sCKZGw2zc93xbgkyp35kcfCmq3foW4T",
+							"type": "string"
+						},
+						{
+							"key": "token",
+							"value": "971298328313987072-SP454mmIx2ZCVsqo4BYD8A6i3wO8L2e",
+							"type": "string"
+						},
+						{
+							"key": "consumerSecret",
+							"value": "seaRWnN4AbTTfqP28lRhRfdNMUzuU1fyDgvOaAEsbU7kUlSlUd",
+							"type": "string"
+						},
+						{
+							"key": "consumerKey",
+							"value": "QwB8P3ajCTgFtucNoc9rTCbDN",
+							"type": "string"
+						},
+						{
+							"key": "signatureMethod",
+							"value": "HMAC-SHA1",
+							"type": "string"
+						},
+						{
+							"key": "version",
+							"value": "1.0",
+							"type": "string"
+						},
+						{
+							"key": "addEmptyParamsToSign",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=Charles19873",
+					"protocol": "https",
+					"host": [
+						"api",
+						"twitter",
+						"com"
+					],
+					"path": [
+						"1.1",
+						"statuses",
+						"user_timeline.json"
+					],
+					"query": [
+						{
+							"key": "screen_name",
+							"value": "Charles19873"
+						}
+					]
+				},
+				"description": "twitter api demo"
+			},
+			"response": []
+		}
+	]
+}
